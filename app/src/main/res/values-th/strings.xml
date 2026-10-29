@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">แทนที่</string>
     <string name="chatlist_show_all">แสดงทั้งหมด %1$d</string>
     <string name="chatlist_show_less">แสดงน้อยลง</string>
+
+    <string name="chat_composer_mic">พูดเพื่อพิมพ์</string>
+    <string name="chat_composer_mic_stop">หยุดแล้วถอดความ</string>
+    <string name="chat_voice_recording">กำลังบันทึก… แตะไมโครโฟนเพื่อถอดความ</string>
+    <string name="chat_voice_transcribing">กำลังถอดความ…</string>
+    <string name="chat_voice_empty">ไม่พบเสียงพูด</string>
+    <string name="chat_voice_permission">อนุญาตไมโครโฟนเพื่อพูดข้อความ</string>
+    <string name="chat_voice_failed">ถอดความไม่ได้: %1$s</string>
+    <string name="chat_voice_record_failed">เริ่มบันทึกไม่ได้</string>
+    <string name="chat_voice_unavailable">การถอดความต้องมีปลั๊กอินบนคอมพิวเตอร์ที่รัน harness</string>
+    <string name="chat_voice_short">เสียงที่บันทึกสั้นเกินไป</string>
+    <string name="chat_balance_label">ยอด DeepSeek, %1$s</string>
+    <string name="chat_balance_unavailable">ไม่มียอด</string>
+    <string name="chat_balance_refresh">รีเฟรชยอด DeepSeek</string>
 </resources>
+

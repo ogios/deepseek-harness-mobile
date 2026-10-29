@@ -30,6 +30,9 @@ DSH Mobile connects to that harness and gives you the same controls in a native 
 start a task at your desk, then follow it, answer its questions and approve its commands from
 your phone.
 
+This fork (`ogios/deepseek-harness-mobile`) adds dictation and a DeepSeek balance chip.
+The phone records audio and the computer transcribes it. See [This fork](#this-fork) below.
+
 This is an unofficial, community-built app. It needs a harness running somewhere it can reach: on
 your computer, or on the phone itself through Termux.
 
@@ -169,7 +172,44 @@ development loop, the module layout and the release steps.
 | `mock-harness/` | A small fake harness server for tests |
 | `tools/capture/` | Records real harness traffic as test fixtures |
 | `harness/` | Setup guides for local network and Termux |
+| `harness-plugin/` | Companion plugin: transcription and DeepSeek balance on the harness |
 | `docs/` | [Architecture](docs/ARCHITECTURE.md), [protocol notes](docs/PROTOCOL.md), [compatibility](docs/COMPATIBILITY.md), [security](docs/SECURITY.md) |
+
+## This fork
+
+The application id is `dev.ogios.dshmobile` (debug builds add `.debug`). Upstream is
+`com.labteto.dshmobile`, so both apps can be installed at once. The launcher name is still
+DSH Mobile; Android's app info shows the package. Notification links use `ogiosdsh://` so
+they open this app. Update checks look at `ogios/deepseek-harness-mobile` releases.
+
+### Companion plugin
+
+On the computer that runs `dsh web --profile web`:
+
+```sh
+dsh plugin --profile web add /path/to/deepseek-harness-mobile/harness-plugin
+```
+
+Restart the harness. The default transcription command is
+`handy --transcribe-file {wav} --json`. Handy 0.9.8 and ffmpeg must be on the service
+`PATH` (`/usr/bin/handy` if the unit's `PATH` is short). The DeepSeek key is the harness
+environment variable `DEEPSEEK_API_KEY`, normally loaded from `~/.dsh/.env`. The phone
+reuses its existing session; there is no new port. Details, timeouts, and the relay note
+are in [`harness-plugin/README.md`](harness-plugin/README.md).
+
+### APK
+
+GitHub Actions builds a signed release APK on every push and on manual dispatch
+(workflow **Installable APK**). Download it from the run's artifacts. A tag `v*` also
+attaches the APK to the GitHub release.
+
+Signing uses `RELEASE_KEYSTORE` secrets when all four are set. Otherwise it uses the
+keystore committed at `app/signing/dsh-mobile-fork.p12` (alias `dsh-mobile`, store and
+key password `dsh-mobile-fork`). That password is public on purpose: anyone can sign an
+update, which is acceptable for this fork and is what lets a later Actions build replace
+an earlier one. It is not a Play App Signing key. Actions builds set `versionCode` to
+`180000 + run number`, so each one updates the last. A locally built APK without
+`DSH_VERSION_CODE` uses a lower code and will not replace an Actions install.
 
 The relay plugin lives in its own repository,
 [sorsama/deepseek-harness-relay](https://github.com/sorsama/deepseek-harness-relay).

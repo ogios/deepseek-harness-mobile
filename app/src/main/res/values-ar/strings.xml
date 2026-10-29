@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">استبدال</string>
     <string name="chatlist_show_all">عرض الكل %1$d</string>
     <string name="chatlist_show_less">عرض أقل</string>
+
+    <string name="chat_composer_mic">إملاء</string>
+    <string name="chat_composer_mic_stop">إيقاف والنسخ</string>
+    <string name="chat_voice_recording">جارٍ التسجيل… اضغط الميكروفون للنسخ</string>
+    <string name="chat_voice_transcribing">جارٍ النسخ…</string>
+    <string name="chat_voice_empty">لم يُتعرَّف على كلام</string>
+    <string name="chat_voice_permission">اسمح بالميكروفون لإملاء رسالة</string>
+    <string name="chat_voice_failed">تعذّر النسخ: %1$s</string>
+    <string name="chat_voice_record_failed">تعذّر بدء التسجيل</string>
+    <string name="chat_voice_unavailable">النسخ يحتاج الإضافة على الحاسوب الذي يشغّل harness</string>
+    <string name="chat_voice_short">التسجيل قصير جدًا</string>
+    <string name="chat_balance_label">رصيد DeepSeek، %1$s</string>
+    <string name="chat_balance_unavailable">الرصيد غير متاح</string>
+    <string name="chat_balance_refresh">تحديث رصيد DeepSeek</string>
 </resources>
+

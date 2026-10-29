@@ -559,6 +559,21 @@ and the app reports them separately (see `docs/COMPATIBILITY.md`).
 Behind a relay the phone sends no harness cookie: the relay holds the harness
 session and injects it upstream.
 
+### Fork companion routes
+
+This fork's `dsh-mobile-companion` plugin registers two exact Fetch routes on
+the connection service, so they run only after the browser-session check above:
+
+| Route | Method | Body |
+|---|---|---|
+| `/api/dshMobile/transcribe` | POST | raw audio; JSON `{ok, text}` or `{ok:false, error}` |
+| `/api/dshMobile/balance` | GET | JSON balance, or `{ok:false, error}` |
+
+A harness without the plugin answers 404. The phone treats that as the feature
+being absent, not as a failed connection. `dsh-relay` 0.3.0 already forwards
+`/api/` writes and every read, and neither path is in its privileged-method
+list, so a paired phone reaches them without an `extraProxyPaths` entry.
+
 ## Relay
 
 `dsh-relay` is a harness plugin, not a different protocol. It terminates TLS,

@@ -7,6 +7,18 @@ All notable changes to DSH Mobile are documented here. Format based on
 
 ### Added
 
+- **Dictate from the composer.** A microphone beside the message field records on the phone
+  and sends the audio to a companion plugin on the computer running the harness. The plugin
+  converts it to 16 kHz mono WAV and runs a local command (Handy by default) so mixed
+  Chinese and English is transcribed on the PC. The text lands in the draft for editing.
+  Install and configuration are in [`harness-plugin/README.md`](harness-plugin/README.md).
+- **DeepSeek balance on the session bar.** A chip shows the account balance from
+  `GET /api/dshMobile/balance`, and a tap refreshes it. The chip stays hidden when the
+  companion plugin is not installed. The API key never leaves the harness.
+- **Installable APKs from GitHub Actions**, signed with a committed fork key when release
+  secrets are absent, so a later build can update an earlier one. The application id is
+  `dev.ogios.dshmobile`, so this fork can sit beside the upstream app.
+
 - **Workspaces in the chat list preview their newest five sessions** instead of unfolding every
   session at once. The rest sit behind a **Show all N** row under the preview, and **Show less**
   puts them back away. A workspace that holds the session you are reading always keeps that

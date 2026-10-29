@@ -24,35 +24,40 @@ jobs:
           packages: platform-tools
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Restore required release signing keystore
+      - name: Restore release signing keystore
         env:
           KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE }}
           KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
+          missing=0
           for name in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
             if [ -z "${!name}" ]; then
-              echo "::error::Missing required release signing secret: $name"
-              exit 1
+              missing=1
             fi
           done
-          printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
-          test -s "$RUNNER_TEMP/release.keystore"
+          if [ "$missing" -eq 0 ]; then
+            printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            test -s "$RUNNER_TEMP/release.keystore"
+            echo "DSH_KEYSTORE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+            echo "DSH_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "DSH_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "DSH_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+          else
+            echo "Release signing secrets are not all set. The committed fork keystore will sign this APK."
+          fi
 
       # The tag is the single source of the shipped version; see app/build.gradle.kts.
       - name: Derive version from tag
-        run: echo "DSH_VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+        run: |
+          echo "DSH_VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          echo "DSH_VERSION_CODE=$((180000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
 
       - name: Unit tests
         run: ./gradlew :core:test :mock-harness:test :app:testReleaseUnitTest --stacktrace
 
       - name: Build release APK
-        env:
-          DSH_KEYSTORE: ${{ runner.temp }}/release.keystore
-          DSH_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          DSH_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-          DSH_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --stacktrace
 
       - name: Release lint

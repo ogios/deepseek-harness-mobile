@@ -33,6 +33,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.animation.animateContentSize
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,7 @@ import com.labteto.dshmobile.ui.components.DsButton
 import com.labteto.dshmobile.ui.components.DsButtonSize
 import com.labteto.dshmobile.ui.components.DsButtonVariant
 import com.labteto.dshmobile.ui.components.DsIconButton
+import com.labteto.dshmobile.ui.components.DsPill
 import com.labteto.dshmobile.ui.components.DsSegment
 import com.labteto.dshmobile.ui.components.DsSegmented
 import com.labteto.dshmobile.ui.components.FeatherIcons
@@ -124,6 +126,9 @@ internal fun ChatTopBar(
     /** False while no session is open, where there is no history to pick from yet. */
     historyEnabled: Boolean,
     modifier: Modifier = Modifier,
+    /** Null when the companion plugin is absent or the balance has not loaded. */
+    balance: BalanceChipUi? = null,
+    onRefreshBalance: () -> Unit = {},
 ) {
     val colors = DsTheme.colors
     Column(modifier.fillMaxWidth().background(colors.bgBase)) {
@@ -160,6 +165,18 @@ internal fun ChatTopBar(
                 }
             }
             RunStatus(running)
+            if (balance != null) {
+                val description = stringResource(R.string.chat_balance_refresh) + ". " +
+                    stringResource(R.string.chat_balance_label, balance.text)
+                DsPill(
+                    text = balance.text,
+                    warn = balance.warn,
+                    onClick = onRefreshBalance,
+                    modifier = Modifier
+                        .widthIn(max = 132.dp)
+                        .semantics { contentDescription = description },
+                )
+            }
             if (!detailsOpen) {
                 DsIconButton(
                     icon = FeatherIcons.Info,

@@ -17,7 +17,8 @@ plugins {
  */
 val dshVersionName: String = System.getenv("DSH_VERSION_NAME")?.takeIf { it.isNotBlank() } ?: "0.18.0"
 
-val dshVersionCode: Int = dshVersionName
+val dshVersionCode: Int = System.getenv("DSH_VERSION_CODE")?.toIntOrNull()?.takeIf { it > 0 }
+    ?: dshVersionName
     .substringBefore('-')
     .split('.')
     .mapNotNull { it.toIntOrNull() }
@@ -34,7 +35,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.labteto.dshmobile"
+        // Distinct from upstream so this fork can be installed beside the original app.
+        applicationId = "dev.ogios.dshmobile"
         minSdk = 26
         targetSdk = 35
         versionCode = dshVersionCode
@@ -53,18 +55,19 @@ android {
         }
     }
 
-    // Optional release signing: provide DSH_KEYSTORE / DSH_KEYSTORE_PASSWORD /
-    // DSH_KEY_ALIAS / DSH_KEY_PASSWORD (env vars, e.g. from GitHub secrets).
-    // Signing activates only when the keystore file actually exists, so a
-    // missing keystore silently falls back to an unsigned release APK.
+    // Release signing. GitHub secrets (DSH_KEYSTORE and the three password/alias
+    // vars) win when they are set. Otherwise the committed fork keystore signs
+    // the APK, so later CI builds can update earlier ones. That keystore password
+    // is public — see README. It is not a Play upload key.
     signingConfigs {
-        val keystore = System.getenv("DSH_KEYSTORE")
-        if (!keystore.isNullOrBlank() && file(keystore).exists()) {
+        val fromEnv = System.getenv("DSH_KEYSTORE")?.takeIf { it.isNotBlank() }
+        val keystore = if (fromEnv != null) file(fromEnv) else file("signing/dsh-mobile-fork.p12")
+        if (keystore.exists()) {
             create("release") {
-                storeFile = file(keystore)
-                storePassword = System.getenv("DSH_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("DSH_KEY_ALIAS")
-                keyPassword = System.getenv("DSH_KEY_PASSWORD")
+                storeFile = keystore
+                storePassword = if (fromEnv != null) System.getenv("DSH_KEYSTORE_PASSWORD") else "dsh-mobile-fork"
+                keyAlias = if (fromEnv != null) System.getenv("DSH_KEY_ALIAS") else "dsh-mobile"
+                keyPassword = if (fromEnv != null) System.getenv("DSH_KEY_PASSWORD") else "dsh-mobile-fork"
             }
             buildTypes.getByName("release") {
                 signingConfig = signingConfigs.getByName("release")

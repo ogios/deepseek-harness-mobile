@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">Remplacer</string>
     <string name="chatlist_show_all">Afficher tout %1$d</string>
     <string name="chatlist_show_less">Afficher moins</string>
+
+    <string name="chat_composer_mic">Dicter</string>
+    <string name="chat_composer_mic_stop">Arrêter et transcrire</string>
+    <string name="chat_voice_recording">Enregistrement… touchez le micro pour transcrire</string>
+    <string name="chat_voice_transcribing">Transcription…</string>
+    <string name="chat_voice_empty">Aucune voix reconnue</string>
+    <string name="chat_voice_permission">Autorisez le micro pour dicter un message</string>
+    <string name="chat_voice_failed">Transcription impossible : %1$s</string>
+    <string name="chat_voice_record_failed">Impossible de démarrer l\'enregistrement</string>
+    <string name="chat_voice_unavailable">La transcription exige le plugin sur l\'ordinateur qui exécute le harness</string>
+    <string name="chat_voice_short">Enregistrement trop court</string>
+    <string name="chat_balance_label">Solde DeepSeek, %1$s</string>
+    <string name="chat_balance_unavailable">Solde indisponible</string>
+    <string name="chat_balance_refresh">Actualiser le solde DeepSeek</string>
 </resources>
+

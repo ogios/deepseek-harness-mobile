@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">替换</string>
     <string name="chatlist_show_all">显示全部 %1$d</string>
     <string name="chatlist_show_less">收起</string>
+
+    <string name="chat_composer_mic">语音输入</string>
+    <string name="chat_composer_mic_stop">停止并转写</string>
+    <string name="chat_voice_recording">正在录音… 点麦克风开始转写</string>
+    <string name="chat_voice_transcribing">正在转写…</string>
+    <string name="chat_voice_empty">没有识别到语音</string>
+    <string name="chat_voice_permission">需要允许使用麦克风才能语音输入</string>
+    <string name="chat_voice_failed">无法转写：%1$s</string>
+    <string name="chat_voice_record_failed">无法开始录音</string>
+    <string name="chat_voice_unavailable">转写需要在运行 Harness 的电脑上安装配套插件</string>
+    <string name="chat_voice_short">录音太短了</string>
+    <string name="chat_balance_label">DeepSeek 余额，%1$s</string>
+    <string name="chat_balance_unavailable">余额不可用</string>
+    <string name="chat_balance_refresh">刷新 DeepSeek 余额</string>
 </resources>
+

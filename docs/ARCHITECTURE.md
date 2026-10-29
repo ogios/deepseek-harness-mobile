@@ -97,7 +97,9 @@ tools/capture/  Node recorder of real harness traffic → conformance fixtures
    pending approvals and foreground questions are answered through `$events/result`;
    continued questions use `userQuestions/answer`. A
    picked file is streamed to `/api/session/uploadFileBinary` as soon as it is
-   picked, and the message cites the receipt that came back.
+   picked, and the message cites the receipt that came back. Dictation uploads
+   to `/api/dshMobile/transcribe` on that same transport. The balance chip
+   reads `/api/dshMobile/balance` and stays hidden when the route answers 404.
 4. `NotificationObserver` classifies host events into completion events and
    posts channel-notifications that deep-link into sessions. Turn and goal
    completions reach it from `SessionStore`, which owns the only stream

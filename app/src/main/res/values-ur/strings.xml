@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">بدلیں</string>
     <string name="chatlist_show_all">سب %1$d دکھائیں</string>
     <string name="chatlist_show_less">کم دکھائیں</string>
+
+    <string name="chat_composer_mic">بول کر لکھیں</string>
+    <string name="chat_composer_mic_stop">روک کر نقل کریں</string>
+    <string name="chat_voice_recording">ریکارڈ ہو رہا ہے… نقل کے لیے مائیکروفون دبائیں</string>
+    <string name="chat_voice_transcribing">نقل ہو رہی ہے…</string>
+    <string name="chat_voice_empty">آواز نہ پہچانی گئی</string>
+    <string name="chat_voice_permission">پیغام بولنے کے لیے مائیکروفون کی اجازت دیں</string>
+    <string name="chat_voice_failed">نقل نہ ہو سکی: %1$s</string>
+    <string name="chat_voice_record_failed">ریکارڈنگ شروع نہ ہو سکی</string>
+    <string name="chat_voice_unavailable">نقل کے لیے harness چلانے والے کمپیوٹر پر پلگ اِن چاہیے</string>
+    <string name="chat_voice_short">ریکارڈنگ بہت چھوٹی تھی</string>
+    <string name="chat_balance_label">DeepSeek بیلنس، %1$s</string>
+    <string name="chat_balance_unavailable">بیلنس دستیاب نہیں</string>
+    <string name="chat_balance_refresh">DeepSeek بیلنس تازہ کریں</string>
 </resources>
+
