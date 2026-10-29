@@ -1,0 +1,22 @@
+# Host-level companion routes for the DSH Mobile fork.
+#
+# Installed with `dsh plugin --profile web add <path>`. Do not also list this
+# plugin in an agent preset: the routes are process-wide, and a second session
+# mount would try to register them again.
+#
+# A profile patch that restates this row replaces `config` whole, so keep every
+# key you still want. Environment variables override a single boot without
+# editing this file; the systemd user service can set them in the unit.
+
+- insert:
+  - id: mobileCompanion
+    name: 'dsh-mobile-companion'
+    config:
+      transcribeCommand: !!js process.env.DSH_MOBILE_TRANSCRIBE_COMMAND ?? 'handy --transcribe-file {wav} --json'
+      transcribeTimeoutMs: !!js Number(process.env.DSH_MOBILE_TRANSCRIBE_TIMEOUT_MS ?? 120000)
+      ffmpegPath: !!js process.env.DSH_MOBILE_FFMPEG ?? 'ffmpeg'
+      ffmpegTimeoutMs: !!js Number(process.env.DSH_MOBILE_FFMPEG_TIMEOUT_MS ?? 30000)
+      maxUploadBytes: !!js Number(process.env.DSH_MOBILE_MAX_UPLOAD_BYTES ?? 26214400)
+      balanceUrl: !!js process.env.DSH_MOBILE_BALANCE_URL ?? 'https://api.deepseek.com/user/balance'
+      balanceCacheMs: !!js Number(process.env.DSH_MOBILE_BALANCE_CACHE_MS ?? 60000)
+      balanceTimeoutMs: !!js Number(process.env.DSH_MOBILE_BALANCE_TIMEOUT_MS ?? 15000)

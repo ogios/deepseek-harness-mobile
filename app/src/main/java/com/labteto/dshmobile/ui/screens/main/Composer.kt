@@ -34,6 +34,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Description
@@ -194,6 +196,9 @@ internal fun Composer(
     onSendWith: ((text: String, mode: String) -> Unit)? = null,
     /** Bumped to move focus into the field, after something outside it fills the draft. */
     focusTick: Int = 0,
+    /** Dictate into the draft. Null hides the microphone; the plugin may still be absent. */
+    dictation: DictationPhase = DictationPhase.Idle,
+    onDictate: (() -> Unit)? = null,
 ) {
     var editor by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue(draft, androidx.compose.ui.text.TextRange(cursor))) }
     androidx.compose.runtime.LaunchedEffect(draft, cursor) {
@@ -330,6 +335,16 @@ internal fun Composer(
                 )
 
                 if (preparing) Text(stringResource(R.string.photos_preparing), style = DsType.caption11)
+                if (dictation != DictationPhase.Idle) {
+                    Text(
+                        stringResource(
+                            if (dictation == DictationPhase.Recording) R.string.chat_voice_recording
+                            else R.string.chat_voice_transcribing,
+                        ),
+                        style = DsType.caption11,
+                        color = if (dictation == DictationPhase.Recording) colors.error else colors.labelSecondary,
+                    )
+                }
                 AnimatedVisibility(visible = attachments.isNotEmpty()) {
                     AttachmentStrip(attachments, onRemoveAttachment, onRetryAttachment)
                 }
@@ -359,6 +374,31 @@ internal fun Composer(
                         enabled = enabled,
                         onClick = onAddReference,
                     )
+
+                    if (onDictate != null) {
+                        val recording = dictation == DictationPhase.Recording
+                        val busy = dictation == DictationPhase.Transcribing
+                        CircleAction(
+                            icon = if (busy) null else if (recording) Icons.Filled.Stop else Icons.Filled.Mic,
+                            description = stringResource(
+                                if (recording) R.string.chat_composer_mic_stop else R.string.chat_composer_mic,
+                            ),
+                            size = 30,
+                            background = if (recording) colors.error else colors.hoverSolid,
+                            tint = if (recording) Color.White else colors.labelPrimary,
+                            enabled = (enabled || recording) && !busy,
+                            onClick = onDictate,
+                            content = if (!busy) null else {
+                                {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(14.dp),
+                                        strokeWidth = 2.dp,
+                                        color = colors.labelSecondary,
+                                    )
+                                }
+                            },
+                        )
+                    }
 
                     Box(Modifier.weight(1f)) {
                         PermissionChip(

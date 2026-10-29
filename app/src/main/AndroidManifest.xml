@@ -12,6 +12,14 @@
         pairing code is a complete alternative, not a degraded one.
     -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!--
+        Dictation. Requested when the microphone by the composer is tapped, not at launch.
+        Optional hardware so a device without a microphone can still install the app.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -75,7 +83,7 @@
                 <data
                     android:host="host"
                     android:pathPrefix="/"
-                    android:scheme="dshmobile" />
+                    android:scheme="ogiosdsh" />
             </intent-filter>
         </activity>
 

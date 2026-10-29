@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">বদলান</string>
     <string name="chatlist_show_all">সব %1$d দেখান</string>
     <string name="chatlist_show_less">কম দেখান</string>
+
+    <string name="chat_composer_mic">বলে লিখুন</string>
+    <string name="chat_composer_mic_stop">থামিয়ে লিখুন</string>
+    <string name="chat_voice_recording">রেকর্ড হচ্ছে… লিখতে মাইক্রোফোন চাপুন</string>
+    <string name="chat_voice_transcribing">লেখা হচ্ছে…</string>
+    <string name="chat_voice_empty">কথা চেনা যায়নি</string>
+    <string name="chat_voice_permission">বার্তা বলতে মাইক্রোফোনের অনুমতি দিন</string>
+    <string name="chat_voice_failed">লেখা যায়নি: %1$s</string>
+    <string name="chat_voice_record_failed">রেকর্ড শুরু হয়নি</string>
+    <string name="chat_voice_unavailable">লিখতে harness চলা কম্পিউটারে সহকারী প্লাগইন লাগবে</string>
+    <string name="chat_voice_short">রেকর্ডিং খুব ছোট</string>
+    <string name="chat_balance_label">DeepSeek ব্যালেন্স, %1$s</string>
+    <string name="chat_balance_unavailable">ব্যালেন্স পাওয়া যায়নি</string>
+    <string name="chat_balance_refresh">DeepSeek ব্যালেন্স রিফ্রেশ করুন</string>
 </resources>
+

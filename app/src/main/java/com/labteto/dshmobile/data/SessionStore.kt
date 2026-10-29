@@ -14,6 +14,8 @@ import com.labteto.dshmobile.core.session.ConversationSnapshot
 import com.labteto.dshmobile.core.session.EventFold
 import com.labteto.dshmobile.core.session.QueueItem
 import com.labteto.dshmobile.core.session.SessionEventEnvelope
+import com.labteto.dshmobile.core.wire.CompanionResult
+import com.labteto.dshmobile.core.wire.DeepSeekBalance
 import com.labteto.dshmobile.core.wire.DshApiClient
 import com.labteto.dshmobile.core.wire.RpcResult
 import com.labteto.dshmobile.core.wire.decodeFromJsonElement
@@ -2704,6 +2706,29 @@ class SessionStore @Inject constructor(
             is RpcResult.Ok -> { setArchived(result.value.archivedSessionIds); refreshSessions(); true }
             is RpcResult.Err -> { setConnectionError(result.error.message); false }
         }
+    }
+
+    /**
+     * DeepSeek account balance from the companion plugin.
+     *
+     * A missing plugin is [CompanionResult.Unavailable] and is not a connection error: the
+     * chat bar hides the chip. The API key never reaches the phone.
+     */
+    suspend fun deepSeekBalance(): CompanionResult<DeepSeekBalance> {
+        val api = connectionManager.connectedApi ?: return CompanionResult.Failed("not connected")
+        return api.companion.balance()
+    }
+
+    /**
+     * Send one recording to the companion plugin and return the transcript.
+     *
+     * [bytes] are the recording. They are not logged. A missing plugin is
+     * [CompanionResult.Unavailable], which the composer explains instead of treating the
+     * session as disconnected.
+     */
+    suspend fun transcribeAudio(bytes: ByteArray, contentType: String): CompanionResult<String> {
+        val api = connectionManager.connectedApi ?: return CompanionResult.Failed("not connected")
+        return api.companion.transcribe(contentType, bytes)
     }
 
     private fun apiOrNull(): DshApiClient? {

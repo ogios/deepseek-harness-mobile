@@ -61,7 +61,7 @@ class DshNotifications @Inject constructor(
         val open = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             if (sessionId != null) {
-                data = android.net.Uri.parse("dshmobile://host/current/session/$sessionId")
+                data = android.net.Uri.parse("ogiosdsh://host/current/session/$sessionId")
                 putExtra(EXTRA_SESSION_ID, sessionId)
             }
         }

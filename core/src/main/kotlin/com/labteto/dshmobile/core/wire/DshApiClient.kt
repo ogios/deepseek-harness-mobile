@@ -127,6 +127,8 @@ const val FILE_UPLOAD_PATH: String = "/api/session/uploadFileBinary"
 class DshApiClient(
     private val transport: RpcTransport,
 ) {
+    /** Fork routes for dictation and the DeepSeek balance. Same session as every other call. */
+    val companion: MobileCompanionClient = MobileCompanionClient(transport)
 
     // ------------------------------------------------------------------ unary machinery
 

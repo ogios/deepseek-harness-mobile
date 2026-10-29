@@ -641,4 +641,19 @@
     <string name="hold_replace_draft_confirm">Replace</string>
     <string name="chatlist_show_all">Show all %1$d</string>
     <string name="chatlist_show_less">Show less</string>
+
+    <string name="chat_composer_mic">Dictate</string>
+    <string name="chat_composer_mic_stop">Stop and transcribe</string>
+    <string name="chat_voice_recording">Recording… tap the microphone to transcribe</string>
+    <string name="chat_voice_transcribing">Transcribing…</string>
+    <string name="chat_voice_empty">No speech recognized</string>
+    <string name="chat_voice_permission">Allow microphone access to dictate a message</string>
+    <string name="chat_voice_failed">Could not transcribe: %1$s</string>
+    <string name="chat_voice_record_failed">Could not start recording</string>
+    <string name="chat_voice_unavailable">Transcription needs the companion plugin on the computer running the harness</string>
+    <string name="chat_voice_short">That recording was too short</string>
+    <string name="chat_balance_label">DeepSeek balance, %1$s</string>
+    <string name="chat_balance_unavailable">Balance unavailable</string>
+    <string name="chat_balance_refresh">Refresh DeepSeek balance</string>
 </resources>
+

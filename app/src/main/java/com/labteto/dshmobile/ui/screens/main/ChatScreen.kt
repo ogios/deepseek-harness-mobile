@@ -1,8 +1,11 @@
 package com.labteto.dshmobile.ui.screens.main
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.provider.OpenableColumns
 import android.util.Base64
+import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -24,12 +27,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,6 +48,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.labteto.dshmobile.core.wire.dto.AskUserQuestionAnswer
 import com.labteto.dshmobile.core.wire.dto.AskUserQuestionAnswerItem
 import com.labteto.dshmobile.core.wire.dto.AskUserQuestionOption
+import com.labteto.dshmobile.connection.ConnectionPhase
+import com.labteto.dshmobile.core.wire.CompanionResult
+import com.labteto.dshmobile.core.wire.DeepSeekBalance
 import com.labteto.dshmobile.core.wire.RpcResult
 import com.labteto.dshmobile.core.wire.dto.CommandSubmitAttachment
 import com.labteto.dshmobile.core.wire.dto.ImageLimitsView
@@ -159,6 +168,82 @@ fun ChatScreen(
     // A held prompt waiting on the reader's say-so before it replaces a draft they had started.
     var replaceDraftWith by remember(composer.key) { mutableStateOf<String?>(null) }
     var composerFocusTick by remember { mutableIntStateOf(0) }
+    var balance by remember(hostKey) { mutableStateOf<CompanionResult<DeepSeekBalance>?>(null) }
+    var dictation by remember(composer.key) { mutableStateOf(DictationPhase.Idle) }
+    val recorder = remember { VoiceRecorder(context) }
+    val visibleComposer by rememberUpdatedState(composer)
+    DisposableEffect(recorder) { onDispose { recorder.discard() } }
+    LaunchedEffect(hostKey, connection.phase) {
+        if (connection.phase == ConnectionPhase.CONNECTED) balance = store.deepSeekBalance()
+    }
+    LaunchedEffect(composer.key) {
+        recorder.discard()
+        dictation = DictationPhase.Idle
+    }
+
+    fun beginRecording() {
+        if (recorder.start()) dictation = DictationPhase.Recording
+        else toast.second(context.getString(R.string.chat_voice_record_failed))
+    }
+
+    fun finishRecording() {
+        val file = recorder.stop()
+        if (file == null) {
+            dictation = DictationPhase.Idle
+            toast.second(context.getString(R.string.chat_voice_short))
+            return
+        }
+        val type = if (file.extension.equals("3gp", ignoreCase = true)) "audio/3gpp" else "audio/mp4"
+        val target = composer
+        dictation = DictationPhase.Transcribing
+        scope.launch {
+            try {
+                val bytes = file.readBytes()
+                when (val result = store.transcribeAudio(bytes, type)) {
+                    CompanionResult.Unavailable -> toast.second(context.getString(R.string.chat_voice_unavailable))
+                    is CompanionResult.Failed -> toast.second(context.getString(R.string.chat_voice_failed, result.message))
+                    is CompanionResult.Ok -> {
+                        val text = result.value.trim()
+                        if (text.isEmpty()) toast.second(context.getString(R.string.chat_voice_empty))
+                        else {
+                            val (next, caret) = insertTranscript(target.text, target.selection, text)
+                            target.text = next
+                            target.selection = caret
+                            if (visibleComposer.key == target.key) composerFocusTick++
+                        }
+                    }
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                toast.second(context.getString(R.string.chat_voice_failed, e.message ?: ""))
+            } finally {
+                file.delete()
+                dictation = DictationPhase.Idle
+            }
+        }
+    }
+
+    val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) beginRecording() else toast.second(context.getString(R.string.chat_voice_permission))
+    }
+
+    fun onMic() {
+        when (dictation) {
+            DictationPhase.Transcribing -> Unit
+            DictationPhase.Recording -> finishRecording()
+            DictationPhase.Idle -> {
+                val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+                if (granted) beginRecording() else micPermission.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        }
+    }
+
+    val balanceChip = when (val result = balance) {
+        null, CompanionResult.Unavailable -> null
+        is CompanionResult.Failed -> BalanceChipUi(stringResource(R.string.chat_balance_unavailable), warn = true)
+        is CompanionResult.Ok -> BalanceChipUi(formatBalanceAmount(result.value), warn = !result.value.available)
+    }
 
     // Hoisted above the tab swap so each view keeps its own scroll position across switches.
     val chatListState = rememberLazyListState()
@@ -495,6 +580,12 @@ fun ChatScreen(
                 onOpenWorkspace = { panelKey = composer.key },
                 workspaceEnabled = currentSessionId != null,
                 historyEnabled = currentSessionId != null,
+                balance = balanceChip,
+                onRefreshBalance = {
+                    scope.launch {
+                        if (connection.phase == ConnectionPhase.CONNECTED) balance = store.deepSeekBalance()
+                    }
+                },
             )
 
             AnimatedPresence(connectionError) {
@@ -748,6 +839,8 @@ fun ChatScreen(
                     onSendWith = { text, delivery -> send(text, delivery) },
                     onStop = { scope.launch { store.cancelTurn() } },
                     focusTick = composerFocusTick,
+                    dictation = dictation,
+                    onDictate = { onMic() },
                 )
 
                 StatsFooter(stats = sessionStats, usage = tokenUsage)

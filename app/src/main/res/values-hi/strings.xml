@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">बदलें</string>
     <string name="chatlist_show_all">सभी %1$d दिखाएँ</string>
     <string name="chatlist_show_less">कम दिखाएँ</string>
+
+    <string name="chat_composer_mic">बोलकर लिखें</string>
+    <string name="chat_composer_mic_stop">रोकें और लिखें</string>
+    <string name="chat_voice_recording">रिकॉर्ड हो रहा है… लिखवाने के लिए माइक्रोफ़ोन दबाएँ</string>
+    <string name="chat_voice_transcribing">लिखा जा रहा है…</string>
+    <string name="chat_voice_empty">आवाज़ नहीं पहचानी गई</string>
+    <string name="chat_voice_permission">संदेश बोलने के लिए माइक्रोफ़ोन की अनुमति दें</string>
+    <string name="chat_voice_failed">लिखा नहीं जा सका: %1$s</string>
+    <string name="chat_voice_record_failed">रिकॉर्डिंग शुरू नहीं हो सकी</string>
+    <string name="chat_voice_unavailable">लिखवाने के लिए Harness वाले कंप्यूटर पर साथ वाला प्लगइन चाहिए</string>
+    <string name="chat_voice_short">रिकॉर्डिंग बहुत छोटी थी</string>
+    <string name="chat_balance_label">DeepSeek शेष, %1$s</string>
+    <string name="chat_balance_unavailable">शेष उपलब्ध नहीं</string>
+    <string name="chat_balance_refresh">DeepSeek शेष रीफ़्रेश करें</string>
 </resources>
+

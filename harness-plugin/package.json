@@ -1,0 +1,38 @@
+{
+  "name": "dsh-mobile-companion",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness plugin: phone speech-to-text via a local command (Handy) and a cached DeepSeek balance lookup, on the harness's existing browser session.",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.json && node --experimental-strip-types --test test/unit.test.ts",
+    "test:live": "npm run build && node test/live.mjs"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24",
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}

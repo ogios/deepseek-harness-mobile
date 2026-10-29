@@ -639,4 +639,19 @@
     <string name="hold_replace_draft_confirm">Заменить</string>
     <string name="chatlist_show_all">Показать все %1$d</string>
     <string name="chatlist_show_less">Показать меньше</string>
+
+    <string name="chat_composer_mic">Надиктовать</string>
+    <string name="chat_composer_mic_stop">Остановить и распознать</string>
+    <string name="chat_voice_recording">Запись… нажмите микрофон, чтобы распознать</string>
+    <string name="chat_voice_transcribing">Распознавание…</string>
+    <string name="chat_voice_empty">Речь не распознана</string>
+    <string name="chat_voice_permission">Разрешите микрофон, чтобы надиктовать сообщение</string>
+    <string name="chat_voice_failed">Не удалось распознать: %1$s</string>
+    <string name="chat_voice_record_failed">Не удалось начать запись</string>
+    <string name="chat_voice_unavailable">Для распознавания нужен плагин на компьютере с harness</string>
+    <string name="chat_voice_short">Запись слишком короткая</string>
+    <string name="chat_balance_label">Баланс DeepSeek, %1$s</string>
+    <string name="chat_balance_unavailable">Баланс недоступен</string>
+    <string name="chat_balance_refresh">Обновить баланс DeepSeek</string>
 </resources>
+
